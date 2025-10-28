@@ -1,0 +1,43 @@
+import {BadRequestException, Injectable} from '@nestjs/common';
+import {UsersService} from "../users/users.service";
+import {JwtService} from "@nestjs/jwt";
+import * as bcrypt from 'bcrypt';
+import {AuthDto} from "./dtos";
+
+@Injectable()
+export class AuthService {
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly jwtService: JwtService
+    ) {}
+
+    private generateToken(userData: AuthDto) {
+        return this.jwtService.sign(userData);
+    }
+
+    async login(data: AuthDto) {
+        const user = await this.usersService.findUserByUsername(data.username);
+
+        if(!user) throw new BadRequestException('User not found');
+
+        const isPasswordValid = await bcrypt.compare(data.username, user.password);
+
+        if(!isPasswordValid) throw new BadRequestException('Invalid password');
+
+        return this.generateToken(data)
+    }
+
+    async register(data: AuthDto) {
+        const user = await this.usersService.findUserByUsername(data.username);
+
+        if(user) throw new BadRequestException('User already exists');
+
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+
+        const createdUser = await this.usersService.createUser(data.username, hashedPassword)
+
+        const {password, ...userData} = createdUser;
+
+        return userData;
+    }
+}
