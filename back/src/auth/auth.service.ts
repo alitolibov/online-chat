@@ -11,20 +11,22 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) {}
 
-    private generateToken(userData: AuthDto) {
-        return this.jwtService.sign(userData);
+    private generateToken(username: string, password: string) {
+        return this.jwtService.sign({ username, password });
     }
 
     async login(data: AuthDto) {
         const user = await this.usersService.findUserByUsername(data.username);
 
-        if(!user) throw new BadRequestException('User not found');
+        if(!user) throw new BadRequestException('Invalid password or username');
 
-        const isPasswordValid = await bcrypt.compare(data.username, user.password);
+        const isPasswordValid = await bcrypt.compare(data.password, user.password);
 
-        if(!isPasswordValid) throw new BadRequestException('Invalid password');
+        if(!isPasswordValid) throw new BadRequestException('Invalid password or username');
 
-        return this.generateToken(data)
+        return {
+            access_token: this.generateToken(data.username, data.password)
+        }
     }
 
     async register(data: AuthDto) {
