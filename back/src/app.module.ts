@@ -6,6 +6,7 @@ import {DbModule} from "./db/db.module";
 import { AuthModule } from './auth/auth.module';
 import {UsersModule} from "./users/users.module";
 import {jwtConfig} from "./config";
+import { ChatsModule } from './chats/chats.module';
 
 @Module({
     imports: [
@@ -16,7 +17,8 @@ import {jwtConfig} from "./config";
         }),
         DbModule,
         AuthModule,
-        UsersModule
+        UsersModule,
+        ChatsModule
     ],
     controllers: [AppController],
     providers: [AppService],

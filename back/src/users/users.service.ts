@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {eq} from "drizzle-orm";
-import {users} from "../db/schema";
+import {chat_members, chats, users} from "../db/schema";
 import type {DB} from "../types";
 
 @Injectable()
@@ -14,7 +14,6 @@ export class UsersService {
             .where(eq(users.username, username))
             .limit(1)
 
-        console.log(result)
         return result[0] ?? null
     }
 
@@ -25,5 +24,25 @@ export class UsersService {
             .returning();
 
         return result[0];
+    }
+
+    async getUserWithChats(userId: number) {
+        const user = await this.db.query.users.findFirst({
+            where: eq(users.id, userId),
+        });
+
+        if (!user) return null;
+
+        const chatList = await this.db
+            .select()
+            .from(chat_members)
+            .leftJoin(chats, eq(chat_members.chat_id, chats.id))
+            .where(eq(chat_members.user_id, userId));
+
+
+        return {
+            ...user,
+            chats: chatList.map(c => c ? c.chats : null),
+        };
     }
 }
