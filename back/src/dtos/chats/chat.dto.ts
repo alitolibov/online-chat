@@ -1,15 +1,18 @@
-import {IsBoolean, IsString, Length, IsOptional, IsNotEmpty} from "class-validator";
+import {IsBoolean, IsString, Length, IsOptional, IsNotEmpty, IsNumber} from "class-validator";
 
-export class CreateChatDTO {
+export class CreateGroupDTO {
     @IsString()
     @IsNotEmpty()
     @Length(3, 100)
     name: string;
-
-    @IsBoolean()
-    @IsOptional()
-    isGroup?: boolean;
 }
+
+export class CreatePrivateDTO {
+    @IsNumber()
+    @IsNotEmpty()
+    otherUserId: number;
+}
+
 
 export class UpdateChatDTO {
     @IsString()

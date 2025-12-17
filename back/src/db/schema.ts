@@ -11,7 +11,7 @@ export const users = pgTable('users', {
 
 export const chats = pgTable('chats', {
     id: serial('id').primaryKey(),
-    name: varchar('name', { length: 256 }).notNull(),
+    name: varchar('name', { length: 256 }),
     createdAt: timestamp('created_at').defaultNow(),
     is_group: boolean('is_group').default(false),
 })
