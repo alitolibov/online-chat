@@ -47,7 +47,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
             logger.log(`[Chats] ${user.username} connected`);
 
-            const chats = await this.chatsService.getChatsForUser(user.id);
+            const chats = await this.chatsService.getChatsUser(user.id);
 
             chats.forEach((chat) => client.join(`chat_${chat.chat_id}`));
 
