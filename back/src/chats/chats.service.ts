@@ -1,6 +1,6 @@
 import {BadRequestException, Inject, Injectable} from '@nestjs/common';
 import type {DB} from "../types";
-import {CreateGroupDTO, CreatePrivateDTO} from "../dtos/chats/chat.dto";
+import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO} from "../dtos/chats/chat.dto";
 import {chat_members, chats} from "../db/schema";
 import {and, eq, inArray} from "drizzle-orm";
 
@@ -56,14 +56,41 @@ export class ChatsService {
     }
 
     async addUserToChatWithDB(db: DB, userId: number, chatId: number) {
-        await db.insert(chat_members).values({
+        return await db.insert(chat_members).values({
             chat_id: chatId,
             user_id: userId,
-        });
+        }).returning();
     }
 
-    async addUserToChat(userId: number, chatId: number) {
-        return this.addUserToChatWithDB(this.db, userId, chatId);
+    async addUserToGroup(data: AddUserToGroupDTO) {
+        const [chat] = await this.db
+            .select()
+            .from(chats)
+            .where(eq(chats.id, data.chatId));
+
+        if (!chat) {
+            throw new BadRequestException("Chat not found");
+        }
+
+        if(!chat.is_group) {
+            throw new BadRequestException("Cannot add users to a private chat");
+        }
+
+        const [existingMember] = await this.db
+            .select()
+            .from(chat_members)
+            .where(
+                and(
+                    eq(chat_members.chat_id, data.chatId),
+                    eq(chat_members.user_id, data.userId)
+                )
+            );
+
+        if (existingMember) {
+            throw new BadRequestException("User is already in this group chat");
+        }
+
+        return this.addUserToChatWithDB(this.db, data.userId, data.chatId);
     }
 
     private async findExistingPrivateChat(userId1: number, userId2: number) {

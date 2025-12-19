@@ -1,7 +1,7 @@
 import {Body, Controller, Post, Req, UseGuards} from '@nestjs/common';
 import {ChatsService} from "./chats.service";
 import {JwtGuard} from "../auth/guard/jwt.guard";
-import {CreateGroupDTO, CreatePrivateDTO} from "../dtos/chats/chat.dto";
+import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO} from "../dtos/chats/chat.dto";
 
 @Controller('chats')
 export class ChatsController {
@@ -20,9 +20,9 @@ export class ChatsController {
     }
 
     @UseGuards(JwtGuard)
-    @Post('add-user-to-chat')
-    async addUserToChat(@Body() body: { chatId: number, userId: number }) {
-        return await this.chatsService.addUserToChat(body.userId, body.chatId);
+    @Post('add-user-to-group')
+    async addUserToChat(@Body() body: AddUserToGroupDTO) {
+        return await this.chatsService.addUserToGroup(body);
     }
 
 }

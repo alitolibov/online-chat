@@ -14,13 +14,12 @@ export class CreatePrivateDTO {
 }
 
 
-export class UpdateChatDTO {
-    @IsString()
-    @Length(3, 100)
-    @IsOptional()
-    name?: string;
+export class AddUserToGroupDTO {
+    @IsNumber()
+    @IsNotEmpty()
+    userId: number;
 
-    @IsBoolean()
-    @IsOptional()
-    isGroup?: boolean;
+    @IsNumber()
+    @IsNotEmpty()
+    chatId: number;
 }
