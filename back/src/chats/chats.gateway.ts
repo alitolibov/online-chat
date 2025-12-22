@@ -10,7 +10,7 @@ import {WsJwtGuard} from "../auth/guard/ws-jwt.guard";
 import {ChatsService} from "./chats.service";
 import {MessagesService} from "../messages/messages.service";
 import {Server, Socket} from "socket.io";
-import {CreateChatMessageDto} from "../dtos/messages/messages.dto";
+import {ChatIdDto, CreateChatMessageDto} from "../dtos/messages/messages.dto";
 import {JwtService} from "@nestjs/jwt";
 
 const logger = new Logger("ChatsModule");
@@ -80,5 +80,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
 
         return message;
+    }
+
+    @UseGuards(WsJwtGuard)
+    @SubscribeMessage('typing')
+    async handleTyping(client: Socket, payload: ChatIdDto) {
+
+        const user = {
+            id: client.data.user.id,
+            username: client.data.user.username,
+        };
+
+        client.broadcast
+            .to(`chat_${payload.chatId}`)
+            .emit("typing", user);
+
+    }
+
+    @UseGuards(WsJwtGuard)
+    @SubscribeMessage('stop_typing')
+    async handleStopTyping(client: Socket, payload: ChatIdDto) {
+        const userId = client.data.user.id;
+
+        client.broadcast
+            .to(`chat_${payload.chatId}`)
+            .emit("stop_typing", { userId });
     }
 }

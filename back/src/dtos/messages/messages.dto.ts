@@ -1,11 +1,13 @@
 import {IsDateString, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString} from "class-validator";
 import {Transform} from "class-transformer";
 
-export class CreateChatMessageDto {
+export class ChatIdDto {
     @IsInt()
     @IsNotEmpty()
     chatId: number;
+}
 
+export class CreateChatMessageDto extends ChatIdDto {
     @Transform(({ value }) => String(value))
     @IsString()
     @IsNotEmpty()
