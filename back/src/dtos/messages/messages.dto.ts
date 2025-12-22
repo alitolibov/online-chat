@@ -1,4 +1,4 @@
-import {IsInt, IsNotEmpty, IsString} from "class-validator";
+import {IsDateString, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString} from "class-validator";
 import {Transform} from "class-transformer";
 
 export class CreateChatMessageDto {
@@ -10,4 +10,14 @@ export class CreateChatMessageDto {
     @IsString()
     @IsNotEmpty()
     content: string;
+}
+
+export class GetMessagesQueryDto {
+    @IsOptional()
+    @IsNumberString()
+    limit?: string;
+
+    @IsOptional()
+    @IsDateString()
+    before?: string;
 }
