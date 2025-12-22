@@ -1,8 +1,8 @@
 import {BadRequestException, Inject, Injectable} from '@nestjs/common';
 import type {DB} from "../types";
-import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO} from "../dtos/chats/chat.dto";
+import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO, SearchChatsDTO} from "../dtos/chats/chat.dto";
 import {chat_members, chats, users} from "../db/schema";
-import {and, eq, inArray, ne, sql} from "drizzle-orm";
+import {and, eq, inArray, like, ne, sql} from "drizzle-orm";
 
 @Injectable()
 export class ChatsService {
@@ -199,5 +199,43 @@ export class ChatsService {
             .select()
             .from(chat_members)
             .where(eq(chat_members.user_id, userId))
+    }
+
+    async searchChats(query: string, currentUserId: number) {
+
+        const foundUsers = await this.db
+            .select()
+            .from(users)
+            .where(
+                and(
+                    like(users.username, `%${query}%`),
+                    ne(users.id, currentUserId)
+                )
+            )
+
+        const foundGroups = await this.db
+            .select()
+            .from(chats)
+            .where(
+                and(
+                    like(chats.name, `%${query}%`),
+                    eq(chats.is_group, true)
+                )
+            )
+
+        return {
+            users: foundUsers.map((u) => (
+                {
+                    id: u.id,
+                    username: u.username,
+                    avatar_url: u.avatar_url,
+                }
+            )),
+            groups: foundGroups.map(c => ({
+                id: c.id,
+                name: c.name,
+                createdAt: c.createdAt
+            }))
+        }
     }
 }

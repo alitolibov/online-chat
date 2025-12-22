@@ -1,7 +1,7 @@
-import {Body, Controller, Get, Post, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Post, Query, Req, UseGuards} from '@nestjs/common';
 import {ChatsService} from "./chats.service";
 import {JwtGuard} from "../auth/guard/jwt.guard";
-import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO} from "../dtos/chats/chat.dto";
+import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO, SearchChatsDTO} from "../dtos/chats/chat.dto";
 
 @Controller('chats')
 export class ChatsController {
@@ -29,6 +29,12 @@ export class ChatsController {
     @Get('user-chats')
     async getChatsUser(@Req() req: any) {
         return await this.chatsService.getChatsForUser(req.user.id);
+    }
+
+    @UseGuards(JwtGuard)
+    @Get('search')
+    async searchChats(@Req() req: any, @Query() query: SearchChatsDTO) {
+        return await this.chatsService.searchChats(query.name, req.user.id);
     }
 
 }

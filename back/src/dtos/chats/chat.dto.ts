@@ -23,3 +23,10 @@ export class AddUserToGroupDTO {
     @IsNotEmpty()
     chatId: number;
 }
+
+export class SearchChatsDTO {
+    @IsString()
+    @IsNotEmpty()
+    @Length(1, 100)
+    name: string;
+}
