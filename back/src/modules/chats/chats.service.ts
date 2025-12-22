@@ -1,7 +1,7 @@
 import {BadRequestException, Inject, Injectable} from '@nestjs/common';
-import type {DB} from "../types";
-import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO, SearchChatsDTO} from "../dtos/chats/chat.dto";
-import {chat_members, chats, users} from "../db/schema";
+import type {DB} from "../../types";
+import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO, SearchChatsDTO} from "../../dtos/chats/chat.dto";
+import {chat_members, chats, users} from "../../db/schema";
 import {and, eq, inArray, like, ne, sql} from "drizzle-orm";
 
 @Injectable()

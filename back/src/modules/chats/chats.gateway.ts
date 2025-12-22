@@ -10,7 +10,7 @@ import {WsJwtGuard} from "../auth/guard/ws-jwt.guard";
 import {ChatsService} from "./chats.service";
 import {MessagesService} from "../messages/messages.service";
 import {Server, Socket} from "socket.io";
-import {ChatIdDto, CreateChatMessageDto} from "../dtos/messages/messages.dto";
+import {ChatIdDto, CreateChatMessageDto} from "../../dtos/messages/messages.dto";
 import {JwtService} from "@nestjs/jwt";
 
 const logger = new Logger("ChatsModule");

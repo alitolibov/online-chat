@@ -1,8 +1,8 @@
 import {ForbiddenException, Inject, Injectable} from '@nestjs/common';
-import type {DB} from "../types";
-import {chat_members, messages, users} from "../db/schema";
+import type {DB} from "../../types";
+import {chat_members, messages, users} from "../../db/schema";
 import {and, desc, eq, lt} from "drizzle-orm";
-import {ICreateChatMessage} from "../types/messages";
+import {ICreateChatMessage} from "../../types/messages";
 
 @Injectable()
 export class MessagesService {

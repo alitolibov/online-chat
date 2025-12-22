@@ -1,7 +1,7 @@
 import {Body, Controller, Get, Post, Query, Req, UseGuards} from '@nestjs/common';
 import {ChatsService} from "./chats.service";
 import {JwtGuard} from "../auth/guard/jwt.guard";
-import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO, SearchChatsDTO} from "../dtos/chats/chat.dto";
+import {AddUserToGroupDTO, CreateGroupDTO, CreatePrivateDTO, SearchChatsDTO} from "../../dtos/chats/chat.dto";
 
 @Controller('chats')
 export class ChatsController {
