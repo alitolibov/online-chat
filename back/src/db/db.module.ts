@@ -1,7 +1,7 @@
-import { Pool } from "pg";
-import { drizzle } from "drizzle-orm/node-postgres";
+import {Pool} from "pg";
+import {drizzle} from "drizzle-orm/node-postgres";
 import * as schema from "./schema";
-import { Global, Module, Logger } from "@nestjs/common";
+import {Global, Module, Logger} from "@nestjs/common";
 import * as dotenv from "dotenv";
 import process from "process";
 
@@ -10,9 +10,11 @@ dotenv.config();
 const logger = new Logger('DatabaseModule');
 
 const pool = new Pool({
-    password: process.env.DATABASE_PASSWORD,
-    user: process.env.DATABASE_NAME,
-    ssl: false,
+    connectionString: process.env.DATABASE_URL,
+    ssl:
+        process.env.NODE_ENV === 'production'
+            ? {rejectUnauthorized: false}
+            : false,
 });
 
 (async () => {
@@ -29,7 +31,7 @@ pool.on('error', (err) => {
     logger.error('Database connection error:', err.message);
 });
 
-const db = drizzle(pool, { schema });
+const db = drizzle(pool, {schema});
 
 @Global()
 @Module({
@@ -41,4 +43,5 @@ const db = drizzle(pool, { schema });
     ],
     exports: ['DB'],
 })
-export class DbModule {}
+export class DbModule {
+}
