@@ -11,8 +11,8 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) {}
 
-    private generateToken(id: number,username: string, password: string) {
-        return this.jwtService.sign({ id, username, password });
+    private generateToken(id: number,username: string) {
+        return this.jwtService.sign({ id, username });
     }
 
     async login(data: AuthDto) {
@@ -25,7 +25,7 @@ export class AuthService {
         if(!isPasswordValid) throw new BadRequestException('Invalid password or username');
 
         return {
-            access_token: this.generateToken(user.id, data.username, data.password)
+            access_token: this.generateToken(user.id, data.username)
         }
     }
 
