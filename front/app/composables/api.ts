@@ -5,11 +5,12 @@ export function useApiAction() {
     $fetch<T>(url, {
       baseURL: config.public.base_url,
       ...options,
+      credentials: 'include',
     })
 
   return {
     post: <T>(url: string, body?: any) =>
-      request<T>(url, { method: 'POST', body }),
+      request<T>(url, { method: 'POST', body}),
 
     patch: <T>(url: string, body?: any) =>
       request<T>(url, { method: 'PATCH', body }),
